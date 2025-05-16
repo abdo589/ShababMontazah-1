@@ -11,16 +11,15 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 
-// Sample data for activity attendance
+// Updated activity data with proper names
 const data = [
-  { name: "صلاة عيد الفطر المبارك", value: 80 },
-  { name: "توزيع كراتين رمضان", value: 70 },
-  { name: "حملة مساعدات غذائية", value: 50 },
+  { name: "افطار صائم", value: 80 },
+  { name: "توزيع مواد غذائية", value: 70 },
   { name: "اجتماع مع قيادات الشباب", value: 40 },
   { name: "فعالية التوعية المجتمعية", value: 60 },
 ];
 
-const COLORS = ["#2563eb", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899"];
+const COLORS = ["#2563eb", "#10b981", "#8b5cf6", "#ec4899"];
 
 // Chart configuration
 const config = {
@@ -54,9 +53,14 @@ const ActivityAttendanceChart: React.FC = () => {
                   dataKey="value"
                   nameKey="name"
                   label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  className="animate-fade-in"
                 >
                   {data.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={COLORS[index % COLORS.length]}
+                      className="hover-scale" 
+                    />
                   ))}
                 </Pie>
                 <Tooltip content={<ChartTooltipContent />} />

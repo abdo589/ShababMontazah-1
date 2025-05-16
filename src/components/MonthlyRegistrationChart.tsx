@@ -1,65 +1,104 @@
 
-import React from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-} from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
+import { 
+  ResponsiveContainer, 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  Tooltip, 
+  Legend, 
+  CartesianGrid 
+} from "recharts";
+import React, { useEffect, useState } from 'react';
 
-// Sample data for monthly registrations in 2025
-const data = [
-  { month: "يناير", عضو_جديد: 12 },
-  { month: "فبراير", عضو_جديد: 19 },
-  { month: "مارس", عضو_جديد: 8 },
-  { month: "أبريل", عضو_جديد: 15 },
-  { month: "مايو", عضو_جديد: 25 },
-  { month: "يونيو", عضو_جديد: 14 },
-  { month: "يوليو", عضو_جديد: 18 },
-  { month: "أغسطس", عضو_جديد: 22 },
-  { month: "سبتمبر", عضو_جديد: 17 },
-  { month: "أكتوبر", عضو_جديد: 13 },
-  { month: "نوفمبر", عضو_جديد: 20 },
-  { month: "ديسمبر", عضو_جديد: 28 },
-];
+// Function to prepare data for the chart
+const prepareMonthlyData = (users: any[]) => {
+  const months = [
+    "يناير", "فبراير", "مارس", "إبريل", "مايو", "يونيو",
+    "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"
+  ];
+  
+  // Initialize data array with all months
+  const initialData = months.map((month, index) => ({
+    name: month,
+    // Month index in Date is 0-based
+    month: index,
+    registrations: 0
+  }));
+  
+  // Count registrations by month
+  users.forEach(user => {
+    if (user.registeredAt) {
+      const date = new Date(user.registeredAt);
+      const monthIndex = date.getMonth();
+      initialData[monthIndex].registrations += 1;
+    }
+  });
+  
+  return initialData;
+};
 
 // Chart configuration
 const config = {
-  عضو_جديد: {
-    label: "عضو جديد",
+  registrations: {
+    label: "عدد التسجيلات",
     theme: {
-      light: "#10b981",
-      dark: "#34d399",
+      light: "#2563eb",
+      dark: "#3b82f6",
     },
   },
 };
 
-const MonthlyRegistrationChart: React.FC = () => {
+interface MonthlyRegistrationChartProps {
+  users: any[];
+}
+
+const MonthlyRegistrationChart = ({ users }: MonthlyRegistrationChartProps) => {
+  const [data, setData] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (users && users.length > 0) {
+      const monthlyData = prepareMonthlyData(users);
+      setData(monthlyData);
+    } else {
+      // Set default data if no users
+      setData(prepareMonthlyData([]));
+    }
+  }, [users]);
+
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-xl font-cairo">تسجيل الأعضاء الجدد شهرياً لعام 2025</CardTitle>
+        <CardTitle className="text-xl font-cairo">التسجيلات الشهرية</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-80 w-full">
           <ChartContainer config={config}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={data}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
+              <BarChart data={data}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis 
+                  dataKey="name" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tickMargin={10}
+                />
+                <YAxis 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tickMargin={10}
+                />
                 <Tooltip content={<ChartTooltipContent />} />
-                <Legend />
-                <Bar dataKey="عضو_جديد" fill="#10b981" name="عضو جديد" radius={[4, 4, 0, 0]} />
+                <Legend verticalAlign="top" height={36} />
+                <Bar 
+                  dataKey="registrations" 
+                  name="عدد التسجيلات" 
+                  fill="#3b82f6" 
+                  radius={[4, 4, 0, 0]} 
+                  className="animate-fade-in"
+                />
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>

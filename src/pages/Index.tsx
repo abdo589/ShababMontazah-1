@@ -34,16 +34,24 @@ const Index = () => {
     navigate("/login");
   };
 
+  // Handle registration scroll
+  const handleJoinUsClick = () => {
+    const element = document.getElementById("registration");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="min-h-screen">
       <Navbar />
       
       {/* User status floating button */}
-      <div className="fixed top-20 left-4 z-50">
+      <div className="fixed top-20 left-4 z-50 animate-fade-in">
         {isLoggedIn ? (
           <Button 
             onClick={handleDashboardClick}
-            className="bg-white text-party-blue hover:bg-white/90 rounded-full shadow-lg flex items-center"
+            className="bg-white text-party-blue hover:bg-white/90 rounded-full shadow-lg flex items-center transform hover:scale-105 transition-all duration-300"
           >
             <User className="mr-2 h-5 w-5" />
             <span>{currentUser?.name || "حسابي"}</span>
@@ -51,12 +59,22 @@ const Index = () => {
         ) : (
           <Button 
             onClick={handleLoginClick}
-            className="bg-white text-party-blue hover:bg-white/90 rounded-full shadow-lg flex items-center"
+            className="bg-white text-party-blue hover:bg-white/90 rounded-full shadow-lg flex items-center transform hover:scale-105 transition-all duration-300"
           >
             <User className="mr-2 h-5 w-5" />
             <span>تسجيل الدخول</span>
           </Button>
         )}
+      </div>
+      
+      {/* Join Us floating button */}
+      <div className="fixed top-20 right-4 z-50 animate-fade-in">
+        <Button 
+          onClick={handleJoinUsClick}
+          className="bg-gradient-to-r from-blue-600 to-blue-800 text-white hover:from-blue-700 hover:to-blue-900 rounded-full shadow-lg flex items-center transform hover:scale-105 transition-all duration-300 animate-pulse"
+        >
+          <span>انضم إلينا</span>
+        </Button>
       </div>
       
       <Hero />

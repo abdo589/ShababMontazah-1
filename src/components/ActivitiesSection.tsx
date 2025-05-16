@@ -1,7 +1,6 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
@@ -13,7 +12,7 @@ import {
 
 // Activity images from the uploaded content
 const activityImages = [
-  "/lovable-uploads/3be61202-134c-40ba-9c43-c30c7e7e4895.png", // صورة صلاة العيد
+  "/lovable-uploads/3be61202-134c-40ba-9c43-c30c7e7e4895.png",
   "/lovable-uploads/ae2f7021-e9fa-49fb-abe0-4522392cdf89.png",
   "/lovable-uploads/e73ad17e-8d94-40ff-8a48-720be57ab6d7.png",
   "/lovable-uploads/9dbf6224-11a6-467e-8d8a-a2c86db2c3f2.png",
@@ -26,60 +25,48 @@ const activityImages = [
   "/lovable-uploads/0094ba79-149c-4140-8a6e-cc27d3140d13.png",
   "/lovable-uploads/6069b162-64bb-4cfc-b35c-858ccd3c60ae.png",
   "/lovable-uploads/c13a4430-a01f-4182-b89f-4b6268912187.png",
+  "/lovable-uploads/d4b251f5-19f9-44aa-8de3-4fa4b075370c.png",
+  "/lovable-uploads/a35fc10c-bd93-445f-9a86-213244f8f92a.png",
 ];
 
-// Activity categories - simplified to only show "all"
-const categories = [
-  { id: "all", name: "كل الفعاليات" },
-];
-
-// Updated activity data with 2025 dates
+// Updated activity data with 2025 dates and new names
 const activities = [
   {
     id: 0,
-    title: "صلاة عيد الفطر المبارك",
-    description: "قام حزب مستقبل وطن قسم المنتزة أول بتنظيم صلاة عيد الفطر المبارك بمشاركة شباب وفتيات من أمانة الشباب، حيث أقيمت الصلاة بحضور عدد كبير من أبناء المنطقة.",
+    title: "افطار صائم",
+    description: "قام حزب مستقبل وطن قسم المنتزة أول بتنظيم إفطار صائم بمشاركة شباب وفتيات من أمانة الشباب، حيث أقيمت الفعالية بحضور عدد كبير من أبناء المنطقة.",
     date: "2025",
-    category: "religious",
-    images: [0],
+    category: "all",
+    images: [0, 1, 2],
     registrationRequired: true
   },
   {
     id: 1,
-    title: "توزيع كراتين رمضان للأسر المحتاجة",
-    description: "قام فريق من شباب الحزب بتوزيع كراتين رمضان على الأسر المحتاجة في منطقة قسم المنتزة أول كجزء من مبادرة دعم الأسر في شهر رمضان المبارك.",
+    title: "توزيع مواد غذائية",
+    description: "قام فريق من شباب الحزب بتوزيع مواد غذائية على الأسر المحتاجة في منطقة قسم المنتزة أول كجزء من مبادرات دعم الأسر.",
     date: "2025",
-    category: "charity",
+    category: "all",
     images: [1, 2, 3, 5],
   },
   {
     id: 2,
-    title: "حملة مساعدات غذائية",
-    description: "قام متطوعو الحزب بتجهيز وتوزيع وجبات للأسر المحتاجة في المناطق النائية، ضمن مبادرات الحزب المستمرة لدعم المجتمع.",
-    date: "2025",
-    category: "charity",
-    images: [4, 6, 7],
-  },
-  {
-    id: 3,
     title: "اجتماع مع قيادات الشباب",
     description: "عقد اجتماع مع قيادات شباب الحزب لمناقشة خطط العمل المستقبلية والمبادرات الجديدة التي تستهدف تنمية المجتمع.",
     date: "2025",
-    category: "meetings",
-    images: [10, 11, 9],
+    category: "all",
+    images: [13, 10, 11],
   },
   {
-    id: 4,
+    id: 3,
     title: "فعالية التوعية المجتمعية",
     description: "نظم الحزب حملة توعية مجتمعية حول أهمية المشاركة المجتمعية وكيفية التأثير الإيجابي في المجتمع.",
     date: "2025",
-    category: "events",
-    images: [7, 8],
+    category: "all",
+    images: [14, 7, 8],
   },
 ];
 
 const ActivitiesSection = () => {
-  const [activeTab, setActiveTab] = useState("all");
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<any>(null);
   const [selectedImage, setSelectedImage] = useState("");
@@ -101,17 +88,17 @@ const ActivitiesSection = () => {
   };
 
   return (
-    <section id="activities" className="py-20 bg-gray-50">
+    <section id="activities" className="py-20 bg-gradient-to-b from-blue-50 to-white">
       <div className="container mx-auto px-4">
         {/* Section Title */}
         <h2 className="section-title mb-12 text-center">الفعاليات</h2>
         
-        {/* Activities Grid - without category tabs */}
+        {/* Activities Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {activities.map((activity) => (
             <Card
               key={activity.id}
-              className="overflow-hidden hover:shadow-xl transition-all duration-300 card-hover border-none"
+              className="overflow-hidden hover:shadow-xl transition-all duration-300 card-hover border-none animate-fade-in"
               onClick={() => handleActivityClick(activity)}
             >
               <div className="aspect-video overflow-hidden">
@@ -121,13 +108,13 @@ const ActivitiesSection = () => {
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
               </div>
-              <CardContent className="p-6">
+              <CardContent className="p-6 bg-gradient-to-br from-blue-50 to-white">
                 <div className="mb-2 text-sm text-party-blue-dark font-semibold">{activity.date}</div>
                 <h3 className="text-xl font-bold mb-2">{activity.title}</h3>
                 <p className="text-gray-600 mb-4 line-clamp-2">{activity.description}</p>
                 <div className="flex gap-2">
                   {activity.images.slice(0, 3).map((imageIndex: number, idx: number) => (
-                    <div key={idx} className="w-12 h-12 rounded-md overflow-hidden">
+                    <div key={idx} className="w-12 h-12 rounded-md overflow-hidden hover:scale-110 transition-transform">
                       <img 
                         src={activityImages[imageIndex]} 
                         alt=""
@@ -148,7 +135,7 @@ const ActivitiesSection = () => {
         
         {/* View All Button */}
         <div className="text-center mt-12">
-          <Button className="btn-primary px-8 py-6 text-lg font-cairo">
+          <Button className="btn-primary px-8 py-6 text-lg font-cairo bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg">
             عرض جميع الفعاليات
           </Button>
         </div>
@@ -170,7 +157,7 @@ const ActivitiesSection = () => {
                 {selectedActivity.images.map((imageIndex: number, idx: number) => (
                   <div 
                     key={idx} 
-                    className="aspect-square rounded-md overflow-hidden cursor-pointer hover:opacity-90"
+                    className="aspect-square rounded-md overflow-hidden cursor-pointer hover:opacity-90 hover:scale-105 transition-transform"
                     onClick={() => handleImageClick(activityImages[imageIndex])}
                   >
                     <img 
@@ -187,7 +174,7 @@ const ActivitiesSection = () => {
             {selectedActivity.registrationRequired && (
               <div className="mt-6">
                 <Button 
-                  className="w-full py-5 text-lg bg-party-blue hover:bg-party-blue-dark"
+                  className="w-full py-5 text-lg bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 transition-all duration-300 transform hover:scale-105"
                   onClick={handleRegisterClick}
                 >
                   التسجيل للمشاركة في هذه الفعالية
@@ -202,7 +189,6 @@ const ActivitiesSection = () => {
       {selectedImage && (
         <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage("")}>
           <DialogContent className="max-w-5xl max-h-screen p-0 bg-transparent border-none">
-            <DialogTitle className="sr-only">صورة الفعالية</DialogTitle>
             <img 
               src={selectedImage} 
               alt="صورة الفعالية" 

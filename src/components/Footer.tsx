@@ -1,5 +1,5 @@
 
-import { Facebook, Twitter, Instagram, Mail, Phone, MapPin } from "lucide-react";
+import { Facebook, Mail, Phone, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Footer = () => {
@@ -9,9 +9,13 @@ const Footer = () => {
       element.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  const handleFacebookClick = () => {
+    window.open("https://www.facebook.com/share/14EVvuCiPNU/?mibextid=wwXIfr", "_blank");
+  };
   
   return (
-    <footer id="contact" className="bg-party-blue-dark text-white pt-16 pb-8">
+    <footer id="contact" className="bg-gradient-to-b from-party-blue-dark to-blue-900 text-white pt-16 pb-8">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Logo and slogan */}
@@ -20,7 +24,7 @@ const Footer = () => {
               <img 
                 src="/lovable-uploads/4360289e-76c2-450e-a6fe-46e70be12fa0.png" 
                 alt="حزب مستقبل وطن" 
-                className="h-24"
+                className="h-24 animate-pulse"
               />
             </div>
             <h3 className="text-xl font-bold mb-2">حزب مستقبل وطن</h3>
@@ -36,7 +40,7 @@ const Footer = () => {
               <li>
                 <button 
                   onClick={() => scrollToSection("home")} 
-                  className="hover:text-party-gold transition-colors"
+                  className="hover:text-party-gold transition-colors transform hover:scale-105"
                 >
                   الرئيسية
                 </button>
@@ -44,7 +48,7 @@ const Footer = () => {
               <li>
                 <button 
                   onClick={() => scrollToSection("about")} 
-                  className="hover:text-party-gold transition-colors"
+                  className="hover:text-party-gold transition-colors transform hover:scale-105"
                 >
                   من نحن
                 </button>
@@ -52,7 +56,7 @@ const Footer = () => {
               <li>
                 <button 
                   onClick={() => scrollToSection("activities")} 
-                  className="hover:text-party-gold transition-colors"
+                  className="hover:text-party-gold transition-colors transform hover:scale-105"
                 >
                   الفعاليات
                 </button>
@@ -60,41 +64,33 @@ const Footer = () => {
               <li>
                 <button 
                   onClick={() => scrollToSection("registration")} 
-                  className="hover:text-party-gold transition-colors"
+                  className="hover:text-party-gold transition-colors transform hover:scale-105"
                 >
-                  التسجيل
+                  انضم إلينا
                 </button>
               </li>
               <li>
-                <a 
-                  href="#" 
-                  className="hover:text-party-gold transition-colors"
+                <button 
+                  onClick={handleFacebookClick}
+                  className="hover:text-party-gold transition-colors transform hover:scale-105"
                 >
                   الأخبار
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="#" 
-                  className="hover:text-party-gold transition-colors"
-                >
-                  سياسة الخصوصية
-                </a>
+                </button>
               </li>
             </ul>
           </div>
           
           {/* Contact info */}
-          <div className="text-center md:text-right">
+          <div className="text-center md:text-right" id="contactUs">
             <h3 className="text-lg font-bold mb-4">تواصل معنا</h3>
             <ul className="space-y-4">
               <li className="flex items-center justify-center md:justify-start">
                 <MapPin className="h-5 w-5 ml-2" />
-                <span>المنتزه، الإسكندرية، مصر</span>
+                <span>شارع 56 البكباشي العيسوي، الإسكندرية، مصر</span>
               </li>
               <li className="flex items-center justify-center md:justify-start">
                 <Phone className="h-5 w-5 ml-2" />
-                <span>+20 123 456 7890</span>
+                <span>01142269314</span>
               </li>
               <li className="flex items-center justify-center md:justify-start">
                 <Mail className="h-5 w-5 ml-2" />
@@ -103,23 +99,22 @@ const Footer = () => {
             </ul>
             
             <div className="mt-6">
-              <h4 className="text-sm mb-3">تابعنا على وسائل التواصل الاجتماعي</h4>
-              <div className="flex justify-center md:justify-start space-x-4 space-x-reverse">
-                <a href="#" className="bg-white text-party-blue-dark p-2 rounded-full hover:bg-party-gold transition-colors">
+              <h4 className="text-sm mb-3">تابعنا على الفيس بوك</h4>
+              <div className="flex justify-center md:justify-start">
+                <a 
+                  href="https://www.facebook.com/share/14EVvuCiPNU/?mibextid=wwXIfr" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="bg-white text-party-blue-dark p-2 rounded-full hover:bg-party-gold transition-colors transform hover:scale-110"
+                >
                   <Facebook className="h-5 w-5" />
-                </a>
-                <a href="#" className="bg-white text-party-blue-dark p-2 rounded-full hover:bg-party-gold transition-colors">
-                  <Twitter className="h-5 w-5" />
-                </a>
-                <a href="#" className="bg-white text-party-blue-dark p-2 rounded-full hover:bg-party-gold transition-colors">
-                  <Instagram className="h-5 w-5" />
                 </a>
               </div>
             </div>
           </div>
         </div>
         
-        {/* Copyright */}
+        {/* Copyright with supervisor credit */}
         <div className="mt-16 pt-8 border-t border-white/10 text-center text-sm text-gray-400">
           <p>جميع الحقوق محفوظة &copy; حزب مستقبل وطن {new Date().getFullYear()}</p>
           <div className="mt-2 flex items-center justify-center">
@@ -130,12 +125,13 @@ const Footer = () => {
             />
             <span>أمانة شباب المنتزة أول</span>
           </div>
+          <p className="mt-2">تم بإشراف معالي الأمين محمد سلام أمين الشباب قسم منتزة</p>
         </div>
       </div>
       
       {/* Back to top button */}
       <Button
-        className="fixed bottom-6 left-6 bg-white text-party-blue-dark rounded-full p-3 shadow-lg hover:bg-party-gold transition-colors"
+        className="fixed bottom-6 left-6 bg-white text-party-blue-dark rounded-full p-3 shadow-lg hover:bg-party-gold transition-colors transform hover:scale-110"
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         size="icon"
       >

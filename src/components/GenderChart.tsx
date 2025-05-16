@@ -1,75 +1,82 @@
 
-import React from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
-  Legend,
-} from "recharts";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 
-// Sample data for gender distribution
-const data = [
-  {
-    name: "توزيع الشباب حسب الجنس",
-    ذكور: 65,
-    إناث: 35,
-  },
-];
+// Colors for the chart
+const COLORS = ["#0088FE", "#FF8042"];
 
 // Chart configuration
 const config = {
-  ذكور: {
-    label: "ذكور",
+  gender: {
+    label: "توزيع النوع",
     theme: {
-      light: "#2563eb",
-      dark: "#3b82f6",
-    },
-  },
-  إناث: {
-    label: "إناث",
-    theme: {
-      light: "#db2777",
-      dark: "#ec4899",
+      light: "#6366f1",
+      dark: "#818cf8",
     },
   },
 };
 
-const COLORS = ["#2563eb", "#db2777"];
+interface GenderChartProps {
+  users: any[];
+}
 
-const GenderChart: React.FC = () => {
+const GenderChart = ({ users }: GenderChartProps) => {
+  const [data, setData] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (users && users.length > 0) {
+      // Count male and female users
+      const maleCount = users.filter(user => user.gender === "ذكر").length;
+      const femaleCount = users.filter(user => user.gender === "أنثى").length;
+      
+      setData([
+        { name: "ذكور", value: maleCount },
+        { name: "إناث", value: femaleCount },
+      ]);
+    } else {
+      // Default data if no users
+      setData([
+        { name: "ذكور", value: 60 },
+        { name: "إناث", value: 40 },
+      ]);
+    }
+  }, [users]);
+
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-xl font-cairo">توزيع الأعضاء حسب الجنس</CardTitle>
+        <CardTitle className="text-xl font-cairo">نسبة الشباب والبنات</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-80 w-full">
           <ChartContainer config={config}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={data}
-                layout="vertical"
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" domain={[0, 100]} tickFormatter={(value) => `${value}%`} />
-                <YAxis dataKey="name" type="category" hide />
-                <Tooltip content={<ChartTooltipContent />} formatter={(value) => `${value}%`} />
+              <PieChart>
+                <Pie
+                  data={data}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={true}
+                  outerRadius={120}
+                  fill="#8884d8"
+                  dataKey="value"
+                  nameKey="name"
+                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  className="animate-fade-in"
+                >
+                  {data.map((entry, index) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={COLORS[index % COLORS.length]} 
+                      className="hover-scale"
+                    />
+                  ))}
+                </Pie>
+                <Tooltip content={<ChartTooltipContent />} />
                 <Legend />
-                <Bar dataKey="ذكور" fill="#2563eb" name="ذكور" stackId="a" radius={[0, 4, 4, 0]}>
-                  <Cell fill={COLORS[0]} />
-                </Bar>
-                <Bar dataKey="إناث" fill="#db2777" name="إناث" stackId="a" radius={[0, 4, 4, 0]}>
-                  <Cell fill={COLORS[1]} />
-                </Bar>
-              </BarChart>
+              </PieChart>
             </ResponsiveContainer>
           </ChartContainer>
         </div>

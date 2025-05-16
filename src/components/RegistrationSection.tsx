@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Form,
   FormControl,
@@ -32,41 +33,11 @@ const formSchema = z.object({
   nationalId: z.string().min(14, { message: "الرقم القومي يجب أن يحتوي على 14 رقم" }),
   address: z.string().min(5, { message: "العنوان يجب أن يحتوي على 5 أحرف على الأقل" }),
   area: z.string().min(1, { message: "يرجى اختيار المنطقة" }),
+  gender: z.string().min(1, { message: "يرجى اختيار النوع" }),
   motivation: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
-
-// Egyptian governorates for the select input
-const governorates = [
-  "الإسكندرية",
-  "القاهرة",
-  "الجيزة",
-  "الإسماعيلية",
-  "أسوان",
-  "أسيوط",
-  "الأقصر",
-  "البحر الأحمر",
-  "البحيرة",
-  "بني سويف",
-  "بورسعيد",
-  "جنوب سيناء",
-  "الدقهلية",
-  "دمياط",
-  "سوهاج",
-  "السويس",
-  "الشرقية",
-  "شمال سيناء",
-  "الغربية",
-  "الفيوم",
-  "القليوبية",
-  "قنا",
-  "كفر الشيخ",
-  "مطروح",
-  "المنوفية",
-  "المنيا",
-  "الوادي الجديد"
-];
 
 // Areas in Alexandria for the select input
 const alexandriaAreas = [
@@ -96,6 +67,7 @@ const RegistrationSection = () => {
       nationalId: "",
       address: "",
       area: "",
+      gender: "",
       motivation: "",
     }
   });
@@ -104,28 +76,57 @@ const RegistrationSection = () => {
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Form data submitted:", data);
+    try {
+      // Insert data into the member_registrations table
+      const { error } = await supabase
+        .from('member_registrations')
+        .insert([
+          { 
+            name: data.name,
+            phone: data.phone,
+            national_id: data.nationalId,
+            gender: data.gender,
+            position: data.area, // Using area as position
+          }
+        ]);
+      
+      if (error) throw error;
       
       // Show success toast
       toast({
         title: "تم إرسال طلب الانضمام بنجاح",
         description: "سنتواصل معك قريبًا للمتابعة",
-        variant: "default",
+        variant: "success",
       });
       
       // Reset form
       form.reset();
+    } catch (error: any) {
+      // Show error toast
+      toast({
+        title: "خطأ في إرسال الطلب",
+        description: error.message || "حدث خطأ أثناء معالجة طلبك، يرجى المحاولة مرة أخرى",
+        variant: "destructive",
+      });
+      console.error("Error submitting form:", error);
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
+  };
+
+  // Scroll to the contact section
+  const scrollToContact = () => {
+    const element = document.getElementById("contactUs");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
-    <section id="registration" className="py-20 bg-white relative">
+    <section id="registration" className="py-20 bg-gradient-to-t from-blue-50 to-white relative">
       <div className="container mx-auto px-4">
         {/* Section Title */}
-        <h2 className="section-title mb-12 text-center">التسجيل</h2>
+        <h2 className="section-title mb-12 text-center">انضم إلينا</h2>
         
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-xl shadow-lg p-6 md:p-10 relative overflow-hidden">
@@ -134,7 +135,7 @@ const RegistrationSection = () => {
             
             {/* Form introduction */}
             <div className="mb-8 text-center">
-              <h3 className="text-2xl font-bold text-party-blue-dark mb-3">انضم إلينا</h3>
+              <h3 className="text-2xl font-bold text-party-blue-dark mb-3 animate-fade-in">انضم إلينا</h3>
               <p className="text-gray-600 max-w-2xl mx-auto">
                 نرحب بانضمامك إلى حزب مستقبل وطن. املأ النموذج التالي وسنتواصل معك في أقرب وقت ممكن.
               </p>
@@ -152,7 +153,7 @@ const RegistrationSection = () => {
                       <FormItem>
                         <FormLabel className="text-gray-700">الاسم بالكامل</FormLabel>
                         <FormControl>
-                          <Input placeholder="أدخل الاسم بالكامل" {...field} />
+                          <Input placeholder="أدخل الاسم بالكامل" className="focus:ring-2 focus:ring-blue-500 transition-all" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -167,7 +168,7 @@ const RegistrationSection = () => {
                       <FormItem>
                         <FormLabel className="text-gray-700">البريد الإلكتروني</FormLabel>
                         <FormControl>
-                          <Input placeholder="example@domain.com" type="email" {...field} />
+                          <Input placeholder="example@domain.com" type="email" className="focus:ring-2 focus:ring-blue-500 transition-all" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -182,7 +183,7 @@ const RegistrationSection = () => {
                       <FormItem>
                         <FormLabel className="text-gray-700">رقم الهاتف</FormLabel>
                         <FormControl>
-                          <Input placeholder="01xxxxxxxxx" {...field} />
+                          <Input placeholder="01xxxxxxxxx" className="focus:ring-2 focus:ring-blue-500 transition-all" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -197,7 +198,7 @@ const RegistrationSection = () => {
                       <FormItem>
                         <FormLabel className="text-gray-700">الرقم القومي</FormLabel>
                         <FormControl>
-                          <Input placeholder="الرقم القومي المكون من 14 رقم" {...field} />
+                          <Input placeholder="الرقم القومي المكون من 14 رقم" className="focus:ring-2 focus:ring-blue-500 transition-all" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -212,7 +213,7 @@ const RegistrationSection = () => {
                       <FormItem>
                         <FormLabel className="text-gray-700">العنوان</FormLabel>
                         <FormControl>
-                          <Input placeholder="العنوان التفصيلي" {...field} />
+                          <Input placeholder="العنوان التفصيلي" className="focus:ring-2 focus:ring-blue-500 transition-all" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -228,7 +229,7 @@ const RegistrationSection = () => {
                         <FormLabel className="text-gray-700">المنطقة</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="focus:ring-2 focus:ring-blue-500 transition-all">
                               <SelectValue placeholder="اختر المنطقة" />
                             </SelectTrigger>
                           </FormControl>
@@ -238,6 +239,29 @@ const RegistrationSection = () => {
                                 {area}
                               </SelectItem>
                             ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  {/* Gender Field */}
+                  <FormField
+                    control={form.control}
+                    name="gender"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-gray-700">النوع</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="focus:ring-2 focus:ring-blue-500 transition-all">
+                              <SelectValue placeholder="اختر النوع" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="ذكر">ذكر</SelectItem>
+                            <SelectItem value="أنثى">أنثى</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -254,7 +278,7 @@ const RegistrationSection = () => {
                     <FormItem>
                       <FormLabel className="text-gray-700">لماذا ترغب في الانضمام للحزب؟ (اختياري)</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="اكتب هنا..." rows={4} {...field} />
+                        <Textarea placeholder="اكتب هنا..." rows={4} className="focus:ring-2 focus:ring-blue-500 transition-all" {...field} />
                       </FormControl>
                       <FormDescription className="text-xs">
                         شارك معنا سبب رغبتك في الانضمام إلى الحزب وكيف يمكنك المساهمة.
@@ -264,13 +288,22 @@ const RegistrationSection = () => {
                   )}
                 />
                 
-                <div className="flex justify-center pt-4">
+                <div className="flex flex-col md:flex-row justify-center gap-4 pt-4">
                   <Button 
                     type="submit" 
-                    className="bg-party-blue hover:bg-party-blue-dark text-white px-10 py-6 text-lg font-cairo"
+                    className="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white px-10 py-6 text-lg font-cairo transform hover:scale-105 transition-all duration-300"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? "جاري الإرسال..." : "إرسال طلب الانضمام"}
+                  </Button>
+                  
+                  <Button 
+                    type="button"
+                    variant="outline" 
+                    className="px-10 py-6 text-lg font-cairo border-blue-500 text-blue-600 hover:bg-blue-50 transform hover:scale-105 transition-all duration-300"
+                    onClick={scrollToContact}
+                  >
+                    تواصل معنا
                   </Button>
                 </div>
               </form>
