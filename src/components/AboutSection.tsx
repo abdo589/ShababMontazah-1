@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ExternalLink } from "lucide-react";
 
 const AboutSection = () => {
   return (
@@ -30,7 +31,17 @@ const AboutSection = () => {
                 <li>الحفاظ على الهوية المصرية والقيم الأصيلة</li>
               </ul>
               
-              <div className="mt-6">
+              <div className="mt-6 flex flex-col sm:flex-row gap-4">
+                <a 
+                  href="https://drive.google.com/file/d/1dFeXjWiPgQ2fZ2DMLvEbT-0o7nDBmJNm/view?usp=sharing" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <Button className="btn-primary flex items-center gap-2">
+                    <span>اللوائح الحزبية</span>
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                </a>
                 <Button className="btn-primary">اقرأ المزيد عن الحزب</Button>
               </div>
             </Card>

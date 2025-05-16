@@ -13,6 +13,7 @@ import {
 
 // Activity images from the uploaded content
 const activityImages = [
+  "/lovable-uploads/3be61202-134c-40ba-9c43-c30c7e7e4895.png", // صورة صلاة العيد
   "/lovable-uploads/ae2f7021-e9fa-49fb-abe0-4522392cdf89.png",
   "/lovable-uploads/e73ad17e-8d94-40ff-8a48-720be57ab6d7.png",
   "/lovable-uploads/9dbf6224-11a6-467e-8d8a-a2c86db2c3f2.png",
@@ -32,18 +33,28 @@ const categories = [
   { id: "all", name: "كل الفعاليات" },
   { id: "charity", name: "أعمال خيرية" },
   { id: "events", name: "فعاليات" },
+  { id: "religious", name: "دينية" },
   { id: "meetings", name: "اجتماعات" },
 ];
 
 // Mock activity data
 const activities = [
   {
+    id: 0,
+    title: "صلاة عيد الفطر المبارك",
+    description: "قام حزب مستقبل وطن قسم المنتزة أول بتنظيم صلاة عيد الفطر المبارك بمشاركة شباب وفتيات من أمانة الشباب، حيث أقيمت الصلاة بحضور عدد كبير من أبناء المنطقة.",
+    date: "أبريل 2023",
+    category: "religious",
+    images: [0],
+    registrationRequired: true
+  },
+  {
     id: 1,
     title: "توزيع كراتين رمضان للأسر المحتاجة",
     description: "قام فريق من شباب الحزب بتوزيع كراتين رمضان على الأسر المحتاجة في منطقة قسم المنتزة أول كجزء من مبادرة دعم الأسر في شهر رمضان المبارك.",
     date: "مارس 2023",
     category: "charity",
-    images: [0, 1, 2, 5],
+    images: [1, 2, 3, 5],
   },
   {
     id: 2,
@@ -51,7 +62,7 @@ const activities = [
     description: "قام متطوعو الحزب بتجهيز وتوزيع وجبات للأسر المحتاجة في المناطق النائية، ضمن مبادرات الحزب المستمرة لدعم المجتمع.",
     date: "فبراير 2023",
     category: "charity",
-    images: [3, 4, 6],
+    images: [4, 6, 7],
   },
   {
     id: 3,
@@ -93,6 +104,11 @@ const ActivitiesSection = () => {
     setSelectedImage(imageSrc);
   };
 
+  // Handle registration click
+  const handleRegisterClick = () => {
+    window.location.href = "/login";
+  };
+
   return (
     <section id="activities" className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -105,7 +121,7 @@ const ActivitiesSection = () => {
           className="mb-10"
           onValueChange={(value) => setActiveTab(value)}
         >
-          <TabsList className="grid grid-cols-2 md:grid-cols-4 w-full max-w-2xl mx-auto">
+          <TabsList className="grid grid-cols-2 md:grid-cols-5 w-full max-w-3xl mx-auto">
             {categories.map((category) => (
               <TabsTrigger 
                 key={category.id} 
@@ -194,6 +210,18 @@ const ActivitiesSection = () => {
                 ))}
               </div>
             </div>
+            
+            {/* Registration Button for activities that require registration */}
+            {selectedActivity.registrationRequired && (
+              <div className="mt-6">
+                <Button 
+                  className="w-full py-5 text-lg bg-party-blue hover:bg-party-blue-dark"
+                  onClick={handleRegisterClick}
+                >
+                  التسجيل للمشاركة في هذه الفعالية
+                </Button>
+              </div>
+            )}
           </DialogContent>
         )}
       </Dialog>
