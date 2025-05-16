@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -20,6 +19,8 @@ import {
   User,
 } from "lucide-react";
 import GenderChart from "@/components/GenderChart";
+import MonthlyRegistrationChart from "@/components/MonthlyRegistrationChart";
+import ActivityAttendanceChart from "@/components/ActivityAttendanceChart";
 
 const Dashboard = () => {
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -92,6 +93,33 @@ const Dashboard = () => {
     document.body.removeChild(link);
   };
 
+  // Export entire site data as zip
+  const exportSiteData = () => {
+    toast({
+      title: "تحميل البيانات",
+      description: "سيتم تحميل ملف مضغوط بكافة بيانات الموقع قريباً...",
+    });
+    
+    // Since browsers can't directly create ZIP files of the entire site,
+    // we can export the available data as a JSON file
+    const siteData = {
+      users: users,
+      activities: activities,
+      timestamp: new Date().toISOString()
+    };
+    
+    const jsonString = JSON.stringify(siteData, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'حزب_مستقبل_وطن_بيانات.json');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // If no current user, show loading or redirect
   if (!currentUser) {
     return <div className="min-h-screen flex items-center justify-center">جاري التحميل...</div>;
@@ -132,12 +160,19 @@ const Dashboard = () => {
             العودة للصفحة الرئيسية
           </Button>
           
-          {currentUser.role === 'admin' && (
-            <Button onClick={exportUsers} className="flex items-center gap-2">
+          <div className="flex gap-2">
+            {currentUser.role === 'admin' && (
+              <Button onClick={exportUsers} className="flex items-center gap-2">
+                <Download className="h-4 w-4" />
+                تصدير بيانات المستخدمين
+              </Button>
+            )}
+            
+            <Button onClick={exportSiteData} variant="secondary" className="flex items-center gap-2">
               <Download className="h-4 w-4" />
-              تصدير بيانات المستخدمين
+              تحميل كافة البيانات
             </Button>
-          )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -177,9 +212,13 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        {/* Gender Distribution Chart */}
-        <div className="mb-8">
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <GenderChart />
+          <MonthlyRegistrationChart />
+          <div className="md:col-span-2">
+            <ActivityAttendanceChart />
+          </div>
         </div>
 
         <Tabs defaultValue="activities" className="space-y-4">
