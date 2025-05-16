@@ -28,25 +28,6 @@ const loginSchema = z.object({
   }),
 });
 
-// Form schema for registration
-const registerSchema = z.object({
-  username: z.string().min(3, {
-    message: "اسم المستخدم يجب أن يكون 3 أحرف على الأقل.",
-  }),
-  password: z.string().min(6, {
-    message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل.",
-  }),
-  name: z.string().min(3, {
-    message: "الاسم يجب أن يكون 3 أحرف على الأقل.",
-  }),
-  phone: z.string().min(11, {
-    message: "رقم الهاتف يجب أن يكون 11 رقم.",
-  }),
-  email: z.string().email({
-    message: "البريد الإلكتروني غير صالح.",
-  }),
-});
-
 const Login = () => {
   const [activeTab, setActiveTab] = useState("login");
   const { toast } = useToast();
@@ -61,31 +42,32 @@ const Login = () => {
     },
   });
 
-  // Register form
-  const registerForm = useForm<z.infer<typeof registerSchema>>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      username: "",
-      password: "",
-      name: "",
-      phone: "",
-      email: "",
-    },
-  });
-
-  // Handle login submission
+  // Handle login submission - only allows admin user
   const onLoginSubmit = (values: z.infer<typeof loginSchema>) => {
-    // Check if user exists in localStorage
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const user = users.find((u: any) => u.username === values.username);
-    
-    if (user && user.password === values.password) {
-      // Set current user in localStorage
-      localStorage.setItem("currentUser", JSON.stringify(user));
+    // Check if credentials match the admin user
+    if (values.username === "admin" && values.password === "watan2025") {
+      // Set admin user data in localStorage
+      const adminUser = {
+        id: 1,
+        username: "admin",
+        name: "مشرف النظام",
+        email: "admin@future-nation.eg",
+        phone: "01000000000",
+        registeredAt: new Date().toISOString(),
+        role: "admin"
+      };
+      
+      localStorage.setItem("currentUser", JSON.stringify(adminUser));
+      
+      // Also store in users array if empty
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      if (users.length === 0) {
+        localStorage.setItem("users", JSON.stringify([adminUser]));
+      }
       
       toast({
         title: "تم تسجيل الدخول بنجاح",
-        description: `مرحباً بك ${user.name || user.username}`,
+        description: "مرحباً بك في لوحة التحكم",
       });
       
       // Navigate to dashboard
@@ -97,44 +79,6 @@ const Login = () => {
         variant: "destructive",
       });
     }
-  };
-
-  // Handle register submission
-  const onRegisterSubmit = (values: z.infer<typeof registerSchema>) => {
-    // Get existing users
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    
-    // Check if username already exists
-    if (users.some((user: any) => user.username === values.username)) {
-      toast({
-        title: "خطأ في التسجيل",
-        description: "اسم المستخدم موجود بالفعل",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    // Add new user
-    const newUser = {
-      ...values,
-      id: Date.now(),
-      registeredAt: new Date().toISOString(),
-      role: "user"
-    };
-    
-    users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
-    
-    // Set current user
-    localStorage.setItem("currentUser", JSON.stringify(newUser));
-    
-    toast({
-      title: "تم التسجيل بنجاح",
-      description: `مرحباً بك ${newUser.name}`,
-    });
-    
-    // Navigate to dashboard
-    navigate("/dashboard");
   };
 
   return (
@@ -153,130 +97,41 @@ const Login = () => {
         <Card className="border-none shadow-lg">
           <CardHeader>
             <CardTitle className="text-center text-xl font-cairo">
-              {activeTab === "login" ? "تسجيل الدخول" : "التسجيل الجديد"}
+              تسجيل الدخول للمشرفين
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Tabs
-              defaultValue="login"
-              className="w-full"
-              value={activeTab}
-              onValueChange={setActiveTab}
-            >
-              <TabsList className="grid grid-cols-2 mb-6">
-                <TabsTrigger value="login">تسجيل الدخول</TabsTrigger>
-                <TabsTrigger value="register">مستخدم جديد</TabsTrigger>
-              </TabsList>
-              
-              {/* Login Form */}
-              <TabsContent value="login">
-                <Form {...loginForm}>
-                  <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
-                    <FormField
-                      control={loginForm.control}
-                      name="username"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>اسم المستخدم</FormLabel>
-                          <FormControl>
-                            <Input placeholder="أدخل اسم المستخدم" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={loginForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>كلمة المرور</FormLabel>
-                          <FormControl>
-                            <Input type="password" placeholder="أدخل كلمة المرور" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button type="submit" className="w-full py-6 mt-4">تسجيل الدخول</Button>
-                  </form>
-                </Form>
-              </TabsContent>
-              
-              {/* Register Form */}
-              <TabsContent value="register">
-                <Form {...registerForm}>
-                  <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
-                    <FormField
-                      control={registerForm.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>الاسم الكامل</FormLabel>
-                          <FormControl>
-                            <Input placeholder="أدخل الاسم الكامل" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={registerForm.control}
-                      name="username"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>اسم المستخدم</FormLabel>
-                          <FormControl>
-                            <Input placeholder="أدخل اسم المستخدم" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={registerForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>كلمة المرور</FormLabel>
-                          <FormControl>
-                            <Input type="password" placeholder="أدخل كلمة المرور" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={registerForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>البريد الإلكتروني</FormLabel>
-                          <FormControl>
-                            <Input type="email" placeholder="أدخل البريد الإلكتروني" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={registerForm.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>رقم الهاتف</FormLabel>
-                          <FormControl>
-                            <Input type="tel" placeholder="أدخل رقم الهاتف" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button type="submit" className="w-full py-6 mt-4">التسجيل</Button>
-                  </form>
-                </Form>
-              </TabsContent>
-            </Tabs>
+            <Form {...loginForm}>
+              <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
+                <FormField
+                  control={loginForm.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>اسم المستخدم</FormLabel>
+                      <FormControl>
+                        <Input placeholder="أدخل اسم المستخدم" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={loginForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>كلمة المرور</FormLabel>
+                      <FormControl>
+                        <Input type="password" placeholder="أدخل كلمة المرور" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full py-6 mt-4">تسجيل الدخول</Button>
+              </form>
+            </Form>
           </CardContent>
         </Card>
         

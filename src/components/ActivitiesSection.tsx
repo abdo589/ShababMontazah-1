@@ -28,22 +28,18 @@ const activityImages = [
   "/lovable-uploads/c13a4430-a01f-4182-b89f-4b6268912187.png",
 ];
 
-// Activity categories
+// Activity categories - simplified to only show "all"
 const categories = [
   { id: "all", name: "كل الفعاليات" },
-  { id: "charity", name: "أعمال خيرية" },
-  { id: "events", name: "فعاليات" },
-  { id: "religious", name: "دينية" },
-  { id: "meetings", name: "اجتماعات" },
 ];
 
-// Mock activity data
+// Updated activity data with 2025 dates
 const activities = [
   {
     id: 0,
     title: "صلاة عيد الفطر المبارك",
     description: "قام حزب مستقبل وطن قسم المنتزة أول بتنظيم صلاة عيد الفطر المبارك بمشاركة شباب وفتيات من أمانة الشباب، حيث أقيمت الصلاة بحضور عدد كبير من أبناء المنطقة.",
-    date: "أبريل 2023",
+    date: "2025",
     category: "religious",
     images: [0],
     registrationRequired: true
@@ -52,7 +48,7 @@ const activities = [
     id: 1,
     title: "توزيع كراتين رمضان للأسر المحتاجة",
     description: "قام فريق من شباب الحزب بتوزيع كراتين رمضان على الأسر المحتاجة في منطقة قسم المنتزة أول كجزء من مبادرة دعم الأسر في شهر رمضان المبارك.",
-    date: "مارس 2023",
+    date: "2025",
     category: "charity",
     images: [1, 2, 3, 5],
   },
@@ -60,7 +56,7 @@ const activities = [
     id: 2,
     title: "حملة مساعدات غذائية",
     description: "قام متطوعو الحزب بتجهيز وتوزيع وجبات للأسر المحتاجة في المناطق النائية، ضمن مبادرات الحزب المستمرة لدعم المجتمع.",
-    date: "فبراير 2023",
+    date: "2025",
     category: "charity",
     images: [4, 6, 7],
   },
@@ -68,7 +64,7 @@ const activities = [
     id: 3,
     title: "اجتماع مع قيادات الشباب",
     description: "عقد اجتماع مع قيادات شباب الحزب لمناقشة خطط العمل المستقبلية والمبادرات الجديدة التي تستهدف تنمية المجتمع.",
-    date: "يناير 2023",
+    date: "2025",
     category: "meetings",
     images: [10, 11, 9],
   },
@@ -76,7 +72,7 @@ const activities = [
     id: 4,
     title: "فعالية التوعية المجتمعية",
     description: "نظم الحزب حملة توعية مجتمعية حول أهمية المشاركة المجتمعية وكيفية التأثير الإيجابي في المجتمع.",
-    date: "ديسمبر 2022",
+    date: "2025",
     category: "events",
     images: [7, 8],
   },
@@ -88,12 +84,7 @@ const ActivitiesSection = () => {
   const [selectedActivity, setSelectedActivity] = useState<any>(null);
   const [selectedImage, setSelectedImage] = useState("");
 
-  // Filter activities based on selected category
-  const filteredActivities = activeTab === "all" 
-    ? activities 
-    : activities.filter(activity => activity.category === activeTab);
-
-  // Open activity details dialog
+  // Handle activity click
   const handleActivityClick = (activity: any) => {
     setSelectedActivity(activity);
     setOpenDialog(true);
@@ -115,28 +106,9 @@ const ActivitiesSection = () => {
         {/* Section Title */}
         <h2 className="section-title mb-12 text-center">الفعاليات</h2>
         
-        {/* Category Tabs */}
-        <Tabs 
-          defaultValue="all" 
-          className="mb-10"
-          onValueChange={(value) => setActiveTab(value)}
-        >
-          <TabsList className="grid grid-cols-2 md:grid-cols-5 w-full max-w-3xl mx-auto">
-            {categories.map((category) => (
-              <TabsTrigger 
-                key={category.id} 
-                value={category.id}
-                className="font-cairo data-[state=active]:bg-party-blue data-[state=active]:text-white"
-              >
-                {category.name}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
-        
-        {/* Activities Grid */}
+        {/* Activities Grid - without category tabs */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredActivities.map((activity) => (
+          {activities.map((activity) => (
             <Card
               key={activity.id}
               className="overflow-hidden hover:shadow-xl transition-all duration-300 card-hover border-none"
@@ -230,6 +202,7 @@ const ActivitiesSection = () => {
       {selectedImage && (
         <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage("")}>
           <DialogContent className="max-w-5xl max-h-screen p-0 bg-transparent border-none">
+            <DialogTitle className="sr-only">صورة الفعالية</DialogTitle>
             <img 
               src={selectedImage} 
               alt="صورة الفعالية" 

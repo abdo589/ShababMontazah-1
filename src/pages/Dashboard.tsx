@@ -19,6 +19,7 @@ import {
   LogOut,
   User,
 } from "lucide-react";
+import GenderChart from "@/components/GenderChart";
 
 const Dashboard = () => {
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -43,11 +44,13 @@ const Dashboard = () => {
       setUsers(JSON.parse(storedUsers));
     }
     
-    // Load activities - simulated data for now
+    // Load activities - updated with 2025 dates
     const mockActivities = [
-      { id: 1, name: "صلاة عيد الفطر المبارك", date: "10/04/2023", participants: 45 },
-      { id: 2, name: "توزيع كراتين رمضان", date: "15/03/2023", participants: 32 },
-      { id: 3, name: "حملة مساعدات غذائية", date: "20/02/2023", participants: 28 },
+      { id: 1, name: "صلاة عيد الفطر المبارك", date: "2025", participants: 45 },
+      { id: 2, name: "توزيع كراتين رمضان", date: "2025", participants: 32 },
+      { id: 3, name: "حملة مساعدات غذائية", date: "2025", participants: 28 },
+      { id: 4, name: "اجتماع مع قيادات الشباب", date: "2025", participants: 15 },
+      { id: 5, name: "فعالية التوعية المجتمعية", date: "2025", participants: 40 },
     ];
     setActivities(mockActivities);
   }, [navigate]);
@@ -172,6 +175,11 @@ const Dashboard = () => {
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Gender Distribution Chart */}
+        <div className="mb-8">
+          <GenderChart />
         </div>
 
         <Tabs defaultValue="activities" className="space-y-4">
