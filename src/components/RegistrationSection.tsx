@@ -1,11 +1,34 @@
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import RegistrationForm from "./registration/RegistrationForm";
 import RegistrationHeader from "./registration/RegistrationHeader";
 import PrivacyNote from "./registration/PrivacyNote";
 import FormContainer from "./registration/FormContainer";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const RegistrationSection = () => {
+  const { toast } = useToast();
+  
+  // Check if database connection is working
+  useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        const { error } = await supabase.from('member_registrations').select('count', { count: 'exact', head: true });
+        
+        if (error) {
+          console.error("Error connecting to database:", error.message);
+        } else {
+          console.log("Database connection successful");
+        }
+      } catch (err) {
+        console.error("Failed to check database connection:", err);
+      }
+    };
+    
+    checkConnection();
+  }, []);
+
   // Scroll to the contact section
   const scrollToContact = () => {
     const element = document.getElementById("contactUs");
