@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Activity images from the uploaded content
 const activityImages = [
@@ -27,6 +28,24 @@ const activityImages = [
   "/lovable-uploads/c13a4430-a01f-4182-b89f-4b6268912187.png",
   "/lovable-uploads/d4b251f5-19f9-44aa-8de3-4fa4b075370c.png",
   "/lovable-uploads/a35fc10c-bd93-445f-9a86-213244f8f92a.png",
+];
+
+// Video links
+const videos = [
+  {
+    id: 0,
+    title: "فيديو الفعاليات",
+    description: "مقتطفات من فعاليات حزب مستقبل وطن - قسم المنتزة أول",
+    thumbnail: "/lovable-uploads/069ca759-fdca-485f-879d-e08e9f5642bb.png",
+    url: "https://drive.google.com/file/d/1USCsCx4BY9XA6-_n1TYgtib9SAH-fobY/view?usp=sharing"
+  },
+  {
+    id: 1,
+    title: "فيديو النشاطات",
+    description: "نشاطات وفعاليات أمانة الشباب",
+    thumbnail: "/lovable-uploads/4b52d8d0-4a15-4bfa-ada9-6def708a1c92.png",
+    url: "https://drive.google.com/file/d/1qxBoMykJ23J3ly76ajrbO55gGiJjQzCm/view?usp=sharing"
+  }
 ];
 
 // Updated activity data with new titles as requested
@@ -54,7 +73,7 @@ const activities = [
     description: "نظم حزب مستقبل وطن قسم المنتزة أول إفطار صائم، بمشاركة عدد كبير من أبناء المنطقة وأعضاء الحزب من الشباب والفتيات.",
     date: "2025",
     category: "all",
-    images: [13, 10, 11],
+    images: [10, 11], // Removed first image (13)
   },
   {
     id: 3,
@@ -62,7 +81,7 @@ const activities = [
     description: "نظم الحزب حملة لتوزيع كراتين رمضان على الأسر المحتاجة في المنطقة، كجزء من المبادرات الخيرية خلال شهر رمضان المبارك.",
     date: "2025",
     category: "all",
-    images: [14, 7, 8],
+    images: [7, 8], // Removed first image (14)
   },
 ];
 
@@ -70,11 +89,18 @@ const ActivitiesSection = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<any>(null);
   const [selectedImage, setSelectedImage] = useState("");
+  const [selectedVideo, setSelectedVideo] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState("activities");
 
   // Handle activity click
   const handleActivityClick = (activity: any) => {
     setSelectedActivity(activity);
     setOpenDialog(true);
+  };
+  
+  // Handle video click
+  const handleVideoClick = (video: any) => {
+    setSelectedVideo(video);
   };
 
   // Open image preview
@@ -91,54 +117,101 @@ const ActivitiesSection = () => {
     <section id="activities" className="py-20 bg-gradient-to-b from-blue-50 to-white">
       <div className="container mx-auto px-4">
         {/* Section Title */}
-        <h2 className="section-title mb-12 text-center">الفعاليات</h2>
+        <h2 className="section-title mb-8 text-center">الفعاليات والمرئيات</h2>
         
-        {/* Activities Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {activities.map((activity) => (
-            <Card
-              key={activity.id}
-              className="overflow-hidden hover:shadow-xl transition-all duration-300 card-hover border-none animate-fade-in"
-              onClick={() => handleActivityClick(activity)}
-            >
-              <div className="aspect-video overflow-hidden">
-                <img 
-                  src={activityImages[activity.images[0]]} 
-                  alt={activity.title}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <CardContent className="p-6 bg-gradient-to-br from-blue-50 to-white">
-                <div className="mb-2 text-sm text-party-blue-dark font-semibold">{activity.date}</div>
-                <h3 className="text-xl font-bold mb-2">{activity.title}</h3>
-                <p className="text-gray-600 mb-4 line-clamp-2">{activity.description}</p>
-                <div className="flex gap-2">
-                  {activity.images.slice(0, 3).map((imageIndex: number, idx: number) => (
-                    <div key={idx} className="w-12 h-12 rounded-md overflow-hidden hover:scale-110 transition-transform">
+        {/* Tabs for Activities and Videos */}
+        <Tabs 
+          defaultValue="activities" 
+          className="mb-10"
+          onValueChange={(value) => setActiveTab(value)}
+        >
+          <div className="flex justify-center mb-8">
+            <TabsList className="bg-blue-100">
+              <TabsTrigger value="activities" className="px-8 py-2 text-lg font-cairo">الفعاليات</TabsTrigger>
+              <TabsTrigger value="videos" className="px-8 py-2 text-lg font-cairo">الفيديوهات</TabsTrigger>
+            </TabsList>
+          </div>
+          
+          <TabsContent value="activities">
+            {/* Activities Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {activities.map((activity) => (
+                <Card
+                  key={activity.id}
+                  className="overflow-hidden hover:shadow-xl transition-all duration-300 card-hover border-none animate-fade-in"
+                  onClick={() => handleActivityClick(activity)}
+                >
+                  <div className="aspect-video overflow-hidden">
+                    <img 
+                      src={activityImages[activity.images[0]]} 
+                      alt={activity.title}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                  <CardContent className="p-6 bg-gradient-to-br from-blue-50 to-white">
+                    <div className="mb-2 text-sm text-party-blue-dark font-semibold">{activity.date}</div>
+                    <h3 className="text-xl font-bold mb-2">{activity.title}</h3>
+                    <p className="text-gray-600 mb-4 line-clamp-2">{activity.description}</p>
+                    <div className="flex gap-2">
+                      {activity.images.slice(0, 3).map((imageIndex: number, idx: number) => (
+                        <div key={idx} className="w-12 h-12 rounded-md overflow-hidden hover:scale-110 transition-transform">
+                          <img 
+                            src={activityImages[imageIndex]} 
+                            alt=""
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ))}
+                      {activity.images.length > 3 && (
+                        <div className="w-12 h-12 rounded-md bg-party-blue-light flex items-center justify-center text-white text-xs">
+                          +{activity.images.length - 3}
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            
+            {/* View All Button */}
+            <div className="text-center mt-12">
+              <Button className="btn-primary px-8 py-6 text-lg font-cairo bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                عرض جميع الفعاليات
+              </Button>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="videos">
+            {/* Videos Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              {videos.map((video) => (
+                <Card
+                  key={video.id}
+                  className="overflow-hidden hover:shadow-xl transition-all duration-300 card-hover border-none animate-fade-in"
+                >
+                  <a href={video.url} target="_blank" rel="noopener noreferrer" className="block">
+                    <div className="aspect-video overflow-hidden relative">
                       <img 
-                        src={activityImages[imageIndex]} 
-                        alt=""
-                        className="w-full h-full object-cover"
+                        src={video.thumbnail} 
+                        alt={video.title}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                       />
+                      <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                        <div className="w-16 h-16 rounded-full bg-white bg-opacity-80 flex items-center justify-center">
+                          <div className="w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-l-16 border-l-blue-600 ml-2"></div>
+                        </div>
+                      </div>
                     </div>
-                  ))}
-                  {activity.images.length > 3 && (
-                    <div className="w-12 h-12 rounded-md bg-party-blue-light flex items-center justify-center text-white text-xs">
-                      +{activity.images.length - 3}
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-        
-        {/* View All Button */}
-        <div className="text-center mt-12">
-          <Button className="btn-primary px-8 py-6 text-lg font-cairo bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg">
-            عرض جميع الفعاليات
-          </Button>
-        </div>
+                    <CardContent className="p-6 bg-gradient-to-br from-blue-50 to-white">
+                      <h3 className="text-xl font-bold mb-2">{video.title}</h3>
+                      <p className="text-gray-600">{video.description}</p>
+                    </CardContent>
+                  </a>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
       
       {/* Activity Details Dialog */}
