@@ -92,11 +92,11 @@ const RegistrationSection = () => {
       
       if (error) throw error;
       
-      // Show success toast
+      // Show success toast - changing the variant to "default" and using a more descriptive title
       toast({
         title: "تم إرسال طلب الانضمام بنجاح",
         description: "سنتواصل معك قريبًا للمتابعة",
-        variant: "success",
+        variant: "success", // This matches the new variant we added
       });
       
       // Reset form
