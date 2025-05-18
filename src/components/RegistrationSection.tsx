@@ -82,11 +82,6 @@ const RegistrationSection = () => {
           </FormContainer>
         </div>
       </div>
-      
-      {/* تذييل المصمم */}
-      <div className="absolute bottom-0 left-0 right-0 text-center p-2 text-xs text-gray-500 bg-gradient-to-t from-white to-transparent">
-        تم التصميم بواسطة م/ عبدالرحمن مصطفى • رقم التواصل: 01142258314
-      </div>
     </section>
   );
 };

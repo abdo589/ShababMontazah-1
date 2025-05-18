@@ -64,8 +64,8 @@ const RegistrationForm = ({ onContactClick }: { onContactClick: () => void }) =>
         throw new Error("رقم الهاتف غير صالح، يجب أن يبدأ بـ 01");
       }
 
-      // تشفير البيانات الحساسة قبل الإرسال (تمثيل فقط - في الواقع يجب أن يكون التشفير في الخادم)
-      const secureData = {
+      // تجهيز البيانات للإرسال مع ضمان تطابق أسماء الأعمدة
+      const submissionData = {
         name: data.name,
         phone: data.phone,
         national_id: data.nationalId,
@@ -75,12 +75,17 @@ const RegistrationForm = ({ onContactClick }: { onContactClick: () => void }) =>
         address: data.address,
       };
       
+      console.log("Submitting data:", submissionData);
+      
       // إرسال البيانات بشكل آمن
       const { error } = await supabase
         .from('member_registrations')
-        .insert([secureData]);
+        .insert([submissionData]);
       
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
       
       // Show success toast with enhanced message
       toast({

@@ -11,7 +11,9 @@ export type Database = {
     Tables: {
       member_registrations: {
         Row: {
+          address: string | null
           created_at: string
+          email: string | null
           gender: string
           id: string
           name: string
@@ -20,7 +22,9 @@ export type Database = {
           position: string
         }
         Insert: {
+          address?: string | null
           created_at?: string
+          email?: string | null
           gender: string
           id?: string
           name: string
@@ -29,7 +33,9 @@ export type Database = {
           position: string
         }
         Update: {
+          address?: string | null
           created_at?: string
+          email?: string | null
           gender?: string
           id?: string
           name?: string
