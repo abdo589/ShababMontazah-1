@@ -2,7 +2,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Download, FileExcel, FilePdf } from "lucide-react";
+import { ChevronLeft, Download, File, FileText } from "lucide-react";
 
 interface DashboardNavProps {
   currentUser: any;
@@ -30,7 +30,7 @@ const DashboardNav = ({ currentUser, exportUsers }: DashboardNavProps) => {
               onClick={exportUsers} 
               className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 transition-all duration-300"
             >
-              <FileExcel className="h-4 w-4" />
+              <FileText className="h-4 w-4" />
               <span className="hidden md:inline">تصدير Excel</span>
               <span className="inline md:hidden">Excel</span>
             </Button>
@@ -39,7 +39,7 @@ const DashboardNav = ({ currentUser, exportUsers }: DashboardNavProps) => {
               onClick={exportUsers} 
               className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 transition-all duration-300"
             >
-              <FilePdf className="h-4 w-4" />
+              <File className="h-4 w-4" />
               <span className="hidden md:inline">تصدير PDF</span>
               <span className="inline md:hidden">PDF</span>
             </Button>

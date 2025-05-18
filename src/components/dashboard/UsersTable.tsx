@@ -1,7 +1,6 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Search, FileText, Download, FileExcel } from "lucide-react";
+import { Search, FileText, Download, File } from "lucide-react";
 import { 
   Table, 
   TableBody, 
@@ -85,7 +84,7 @@ const UsersTable = ({
               </>
             ) : (
               <>
-                <FileExcel className="h-4 w-4" />
+                <FileText className="h-4 w-4" />
                 تصدير للإكسيل
               </>
             )}
