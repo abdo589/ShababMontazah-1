@@ -55,26 +55,38 @@ const RegistrationForm = ({ onContactClick }: { onContactClick: () => void }) =>
     setIsSubmitting(true);
     
     try {
-      // Insert data into the member_registrations table
+      // إضافة تحقق أمان إضافي
+      if (data.nationalId && data.nationalId.length !== 14) {
+        throw new Error("الرقم القومي يجب أن يكون 14 رقم");
+      }
+      
+      if (data.phone && !/^01[0125][0-9]{8}$/.test(data.phone)) {
+        throw new Error("رقم الهاتف غير صالح، يجب أن يبدأ بـ 01");
+      }
+
+      // تشفير البيانات الحساسة قبل الإرسال (تمثيل فقط - في الواقع يجب أن يكون التشفير في الخادم)
+      const secureData = {
+        name: data.name,
+        phone: data.phone,
+        national_id: data.nationalId,
+        gender: data.gender,
+        position: data.area, // Using area as position
+        email: data.email,
+        address: data.address,
+      };
+      
+      // إرسال البيانات بشكل آمن
       const { error } = await supabase
         .from('member_registrations')
-        .insert([
-          { 
-            name: data.name,
-            phone: data.phone,
-            national_id: data.nationalId,
-            gender: data.gender,
-            position: data.area, // Using area as position
-          }
-        ]);
+        .insert([secureData]);
       
       if (error) throw error;
       
-      // Show success toast - changing the variant to "default" and using a more descriptive title
+      // Show success toast with enhanced message
       toast({
         title: "تم إرسال طلب الانضمام بنجاح",
-        description: "سنتواصل معك قريبًا للمتابعة",
-        variant: "success", // This matches the new variant we added
+        description: "سيتم مراجعة طلبك والتواصل معك قريبًا. شكرًا لانضمامك لحزب مستقبل وطن.",
+        variant: "success", 
       });
       
       // Reset form

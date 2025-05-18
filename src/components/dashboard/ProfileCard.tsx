@@ -37,7 +37,7 @@ const ProfileCard = ({ currentUser }: ProfileCardProps) => {
       <div className="mt-6 text-center">
         <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 inline-block">
           <p className="text-blue-800 font-bold">تم بإشراف معالي الأمين محمد سلام أمين الشباب قسم منتزة</p>
-          <p className="text-blue-600 mt-2">مشرف النظام ب/ عبدالرحمن مصطفى</p>
+          <p className="text-blue-600 mt-2">تم بواسطة م/ عبدالرحمن مصطفى</p>
         </div>
       </div>
     </div>

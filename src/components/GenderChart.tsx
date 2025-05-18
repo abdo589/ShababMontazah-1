@@ -32,14 +32,16 @@ const GenderChart = ({ users }: GenderChartProps) => {
       const femaleCount = users.filter(user => user.gender === "أنثى").length;
       
       setData([
-        { name: "ذكور", value: maleCount },
-        { name: "إناث", value: femaleCount },
+        { name: "ذكور", value: maleCount || 0 },
+        { name: "إناث", value: femaleCount || 0 },
       ]);
+      
+      console.log('Gender data updated:', maleCount, femaleCount);
     } else {
       // Default data if no users
       setData([
-        { name: "ذكور", value: 60 },
-        { name: "إناث", value: 40 },
+        { name: "ذكور", value: 0 },
+        { name: "إناث", value: 0 },
       ]);
     }
   }, [users]);

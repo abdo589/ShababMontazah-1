@@ -90,7 +90,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center justify-center md:justify-start">
                 <Phone className="h-5 w-5 ml-2" />
-                <span>01142269314</span>
+                <span>01142258314</span>
               </li>
               <li className="flex items-center justify-center md:justify-start">
                 <Mail className="h-5 w-5 ml-2" />
@@ -126,8 +126,8 @@ const Footer = () => {
             <span>أمانة شباب المنتزة أول</span>
           </div>
           <p className="mt-2">تم بإشراف معالي الأمين محمد سلام أمين الشباب قسم منتزة</p>
-          <p className="mt-2">تم التصميم بواسطة ب/ عبدالرحمن مصطفى • رقم التواصل: 01142258314</p>
-          <p className="mt-1">مشرف النظام ب/ عبدالرحمن مصطفى</p>
+          <p className="mt-2">تم التصميم بواسطة م/ عبدالرحمن مصطفى • رقم التواصل: 01142258314</p>
+          <p className="mt-1">تم بواسطة م/ عبدالرحمن مصطفى</p>
         </div>
       </div>
       
