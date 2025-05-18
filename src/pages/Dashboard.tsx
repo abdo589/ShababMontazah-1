@@ -1,33 +1,19 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  ChevronLeft,
-  Download,
-  LogOut,
-  User,
-  Calendar,
-  Users,
-  Activity,
-  Search,
-  FileText
-} from "lucide-react";
-import GenderChart from "@/components/GenderChart";
-import MonthlyRegistrationChart from "@/components/MonthlyRegistrationChart";
-import ActivityAttendanceChart from "@/components/ActivityAttendanceChart";
+
+// Import refactored components
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import DashboardNav from "@/components/dashboard/DashboardNav";
+import StatCards from "@/components/dashboard/StatCards";
+import ChartsSection from "@/components/dashboard/ChartsSection";
+import ActivitiesTable from "@/components/dashboard/ActivitiesTable";
+import UsersTable from "@/components/dashboard/UsersTable";
+import ProfileCard from "@/components/dashboard/ProfileCard";
 
 const Dashboard = () => {
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -189,132 +175,13 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Header */}
-      <header className="bg-gradient-to-r from-party-blue to-blue-700 text-white p-4 shadow-md">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <img 
-              src="/lovable-uploads/4360289e-76c2-450e-a6fe-46e70be12fa0.png" 
-              alt="شعار الحزب" 
-              className="w-10 h-10 animate-pulse"
-            />
-            <h1 className="text-xl font-bold">لوحة التحكم</h1>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <div className="hidden md:flex items-center gap-2">
-              <User className="h-5 w-5" />
-              <span>{currentUser.name}</span>
-            </div>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handleLogout}
-              className="hover:bg-red-500 hover:text-white border-white text-white transition-all duration-300"
-            >
-              <LogOut className="h-4 w-4 ml-2" />
-              تسجيل الخروج
-            </Button>
-          </div>
-        </div>
-      </header>
+      <DashboardHeader currentUser={currentUser} handleLogout={handleLogout} />
 
       {/* Main Content */}
       <main className="container mx-auto py-8 px-4 animate-fade-in">
-        <div className="flex justify-between items-center mb-6">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate("/")}
-            className="hover:bg-blue-100 transition-all duration-300"
-          >
-            <ChevronLeft className="h-4 w-4 ml-2" />
-            العودة للصفحة الرئيسية
-          </Button>
-          
-          <div className="flex gap-2">
-            {currentUser.role === 'admin' && (
-              <Button 
-                onClick={exportUsers} 
-                className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 transition-all duration-300"
-              >
-                <Download className="h-4 w-4" />
-                تصدير بيانات المستخدمين
-              </Button>
-            )}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-blue-50 border-blue-200">
-            <CardHeader className="pb-2 border-b border-blue-100">
-              <CardTitle className="text-sm font-medium text-blue-600 flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                إجمالي المستخدمين
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold mt-2 text-blue-800">{users.length}</div>
-              <div className="text-xs text-gray-500 mt-1">تم التحديث: {new Date().toLocaleTimeString('ar-EG')}</div>
-            </CardContent>
-          </Card>
-          
-          <Card className="hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-green-50 border-green-200">
-            <CardHeader className="pb-2 border-b border-green-100">
-              <CardTitle className="text-sm font-medium text-green-600 flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
-                إجمالي الفعاليات
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold mt-2 text-green-800">{activities.length}</div>
-              <div className="text-xs text-gray-500 mt-1">تم التحديث: {new Date().toLocaleTimeString('ar-EG')}</div>
-            </CardContent>
-          </Card>
-          
-          <Card className="hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-amber-50 border-amber-200">
-            <CardHeader className="pb-2 border-b border-amber-100">
-              <CardTitle className="text-sm font-medium text-amber-600 flex items-center gap-2">
-                <Activity className="h-5 w-5" />
-                إجمالي المشاركين
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold mt-2 text-amber-800">
-                {activities.reduce((sum, act) => sum + act.participants, 0)}
-              </div>
-              <div className="text-xs text-gray-500 mt-1">تم التحديث: {new Date().toLocaleTimeString('ar-EG')}</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <Card className="hover:shadow-lg transition-all duration-300 border-blue-200">
-            <CardHeader>
-              <CardTitle className="text-blue-800">توزيع المسجلين حسب النوع</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <GenderChart users={users} />
-            </CardContent>
-          </Card>
-          
-          <Card className="hover:shadow-lg transition-all duration-300 border-green-200">
-            <CardHeader>
-              <CardTitle className="text-green-800">التسجيلات الشهرية</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <MonthlyRegistrationChart users={users} />
-            </CardContent>
-          </Card>
-          
-          <Card className="md:col-span-2 hover:shadow-lg transition-all duration-300 border-amber-200">
-            <CardHeader>
-              <CardTitle className="text-amber-800">حضور الفعاليات</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ActivityAttendanceChart />
-            </CardContent>
-          </Card>
-        </div>
+        <DashboardNav currentUser={currentUser} exportUsers={exportUsers} />
+        <StatCards users={users} activities={activities} />
+        <ChartsSection users={users} />
 
         <Tabs defaultValue="activities" className="space-y-4">
           <TabsList className="bg-blue-100 p-1 rounded-xl">
@@ -331,28 +198,7 @@ const Dashboard = () => {
                 <CardTitle className="text-blue-800">الفعاليات القادمة</CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <Table>
-                  <TableHeader className="bg-blue-50">
-                    <TableRow>
-                      <TableHead className="font-bold text-blue-700">اسم الفعالية</TableHead>
-                      <TableHead className="font-bold text-blue-700">التاريخ</TableHead>
-                      <TableHead className="font-bold text-blue-700">عدد المشاركين</TableHead>
-                      <TableHead className="font-bold text-blue-700 w-[100px]">الإجراءات</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {activities.map((activity) => (
-                      <TableRow key={activity.id} className="hover:bg-blue-50 transition-colors">
-                        <TableCell className="font-medium">{activity.name}</TableCell>
-                        <TableCell>{activity.date}</TableCell>
-                        <TableCell>{activity.participants}</TableCell>
-                        <TableCell>
-                          <Button size="sm" variant="outline" className="hover:bg-blue-500 hover:text-white transition-colors">المزيد</Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <ActivitiesTable activities={activities} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -360,67 +206,18 @@ const Dashboard = () => {
           {currentUser.role === 'admin' && (
             <TabsContent value="users" className="space-y-4">
               <Card className="hover:shadow-lg transition-all duration-300 border-green-200">
-                <CardHeader className="bg-gradient-to-r from-green-50 to-green-100 border-b border-green-200 flex flex-row items-center justify-between">
+                <CardHeader className="bg-gradient-to-r from-green-50 to-green-100 border-b border-green-200">
                   <CardTitle className="text-green-800">المستخدمين المسجلين</CardTitle>
-                  <div className="flex items-center gap-2">
-                    <div className="relative">
-                      <Search className="h-4 w-4 absolute top-3 right-3 text-gray-400" />
-                      <input
-                        type="text"
-                        placeholder="بحث..."
-                        className="pl-4 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                      />
-                    </div>
-                    <Button 
-                      size="sm" 
-                      onClick={exportUsers} 
-                      className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 transition-all duration-300"
-                    >
-                      <FileText className="h-4 w-4" />
-                      تصدير للإكسيل
-                    </Button>
-                  </div>
                 </CardHeader>
-                <CardContent className="p-0">
-                  {isLoading ? (
-                    <div className="text-center py-4">جاري تحميل البيانات...</div>
-                  ) : (
-                    <Table>
-                      <TableHeader className="bg-green-50">
-                        <TableRow>
-                          <TableHead className="font-bold text-green-700">الاسم</TableHead>
-                          <TableHead className="font-bold text-green-700">النوع</TableHead>
-                          <TableHead className="font-bold text-green-700">رقم الهاتف</TableHead>
-                          <TableHead className="font-bold text-green-700">الرقم القومي</TableHead>
-                          <TableHead className="font-bold text-green-700">المنطقة</TableHead>
-                          <TableHead className="font-bold text-green-700">تاريخ التسجيل</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {filteredRegistrations.length === 0 ? (
-                          <TableRow>
-                            <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                              {searchTerm ? "لا توجد نتائج للبحث" : "لا توجد بيانات للعرض"}
-                            </TableCell>
-                          </TableRow>
-                        ) : (
-                          filteredRegistrations.map((user) => (
-                            <TableRow key={user.id} className="hover:bg-green-50 transition-colors">
-                              <TableCell className="font-medium">{user.name}</TableCell>
-                              <TableCell>{user.gender}</TableCell>
-                              <TableCell>{user.phone}</TableCell>
-                              <TableCell>{user.national_id}</TableCell>
-                              <TableCell>{user.position}</TableCell>
-                              <TableCell>
-                                {new Date(user.created_at).toLocaleDateString('ar-EG')}
-                              </TableCell>
-                            </TableRow>
-                          ))
-                        )}
-                      </TableBody>
-                    </Table>
-                  )}
+                <CardContent className="p-4">
+                  <UsersTable 
+                    registrations={registrations}
+                    filteredRegistrations={filteredRegistrations} 
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    exportUsers={exportUsers}
+                    isLoading={isLoading}
+                  />
                 </CardContent>
               </Card>
             </TabsContent>
@@ -431,38 +228,8 @@ const Dashboard = () => {
               <CardHeader className="bg-gradient-to-r from-amber-50 to-amber-100 border-b border-amber-200">
                 <CardTitle className="text-amber-800">معلومات المستخدم</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 p-6">
-                <div className="flex justify-center mb-6">
-                  <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center border-4 border-white shadow-lg">
-                    <User className="h-12 w-12 text-blue-600" />
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
-                    <h3 className="text-sm font-medium text-amber-700">الاسم</h3>
-                    <p className="text-lg font-bold">{currentUser.name}</p>
-                  </div>
-                  <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
-                    <h3 className="text-sm font-medium text-amber-700">اسم المستخدم</h3>
-                    <p className="text-lg font-bold">{currentUser.username}</p>
-                  </div>
-                  <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
-                    <h3 className="text-sm font-medium text-amber-700">الدور</h3>
-                    <p className="text-lg font-bold">{currentUser.role === 'admin' ? 'مدير النظام' : 'مستخدم'}</p>
-                  </div>
-                  <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
-                    <h3 className="text-sm font-medium text-amber-700">تاريخ آخر تسجيل دخول</h3>
-                    <p className="text-lg font-bold">{new Date().toLocaleDateString('ar-EG')}</p>
-                  </div>
-                </div>
-                
-                <div className="mt-6 text-center">
-                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 inline-block">
-                    <p className="text-blue-800 font-bold">تم بإشراف معالي الأمين محمد سلام أمين الشباب قسم منتزة</p>
-                    <p className="text-blue-600 mt-2">مشرف النظام ب/ عبدالرحمن مصطفى</p>
-                  </div>
-                </div>
+              <CardContent>
+                <ProfileCard currentUser={currentUser} />
               </CardContent>
             </Card>
           </TabsContent>
