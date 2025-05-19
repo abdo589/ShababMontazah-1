@@ -55,7 +55,7 @@ const Hero = () => {
           <div className="md:w-1/2 flex justify-center items-center">
             <div className="relative w-64 h-64 md:w-80 md:h-80">
               <img 
-                src="/lovable-uploads/4360289e-76c2-450e-a6fe-46e70be12fa0.png"
+                src="/lovable-uploads/839ee284-514f-452d-9111-08735d130ee8.png"
                 alt="شعار حزب مستقبل وطن"
                 className="w-full h-full object-contain animate-float drop-shadow-2xl"
               />

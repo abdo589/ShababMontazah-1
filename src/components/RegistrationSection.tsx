@@ -26,6 +26,12 @@ const RegistrationSection = () => {
           });
         } else {
           console.log("Database connection successful");
+          // يمكننا إظهار رسالة نجاح هنا إذا أردنا
+          toast({
+            title: "انضم إلينا",
+            description: "تم الاتصال بقاعدة البيانات بنجاح",
+            variant: "success",
+          });
         }
       } catch (err) {
         console.error("Failed to check database connection:", err);
@@ -45,13 +51,11 @@ const RegistrationSection = () => {
         console.log('New registration:', payload);
         
         // يمكن إظهار إشعار إذا كنت تريد (تعليق في الوقت الحالي لتجنب إظهار معلومات حساسة)
-        /*
         toast({
-          title: "تسجيل جديد",
+          title: "انضم إلينا",
           description: "تم استلام طلب انضمام جديد",
           variant: "success",
         });
-        */
       })
       .subscribe();
       
