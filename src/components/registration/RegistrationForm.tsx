@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -78,14 +77,17 @@ const RegistrationForm = ({ onContactClick }: { onContactClick: () => void }) =>
       console.log("Submitting data:", submissionData);
       
       // إرسال البيانات بشكل آمن
-      const { error } = await supabase
+      const { data: insertedData, error } = await supabase
         .from('member_registrations')
-        .insert([submissionData]);
+        .insert([submissionData])
+        .select();
       
       if (error) {
         console.error("Supabase error:", error);
         throw error;
       }
+      
+      console.log("Successfully submitted data:", insertedData);
       
       // Show success toast with enhanced message
       toast({

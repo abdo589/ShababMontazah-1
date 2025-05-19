@@ -49,6 +49,7 @@ const Dashboard = () => {
         }
 
         if (data) {
+          console.log("Fetched registrations:", data);
           setRegistrations(data);
           setUsers(data.map((reg, index) => ({
             id: index + 1,
@@ -72,33 +73,48 @@ const Dashboard = () => {
     
     fetchRegistrations();
     
-    // Set up realtime subscription for new registrations
+    // Set up enhanced realtime subscription for new registrations
     const channel = supabase
-      .channel('public:member_registrations')
+      .channel('real-time-registrations')
       .on('postgres_changes', { 
         event: 'INSERT', 
         schema: 'public', 
         table: 'member_registrations' 
       }, (payload) => {
-        // Update the registrations array with the new registration
-        setRegistrations(prev => [payload.new as any, ...prev]);
+        console.log('Dashboard: New registration received:', payload.new);
+        
+        // Update the registrations array with the new registration at the top
+        const newRegistration = payload.new as any;
+        
+        setRegistrations(prev => {
+          // Check if this registration is already in the list
+          const exists = prev.some(reg => reg.id === newRegistration.id);
+          if (exists) return prev;
+          return [newRegistration, ...prev];
+        });
+        
         // Update the users array for charts
-        setUsers(prev => [{
-          id: prev.length + 1,
-          name: (payload.new as any).name,
-          phone: (payload.new as any).phone,
-          registeredAt: (payload.new as any).created_at,
-          gender: (payload.new as any).gender
-        }, ...prev]);
+        setUsers(prev => {
+          const newUser = {
+            id: prev.length + 1,
+            name: newRegistration.name,
+            phone: newRegistration.phone,
+            registeredAt: newRegistration.created_at,
+            gender: newRegistration.gender
+          };
+          return [newUser, ...prev];
+        });
         
         // Show a toast notification
         toast({
-          title: "تسجيل جديد",
-          description: `تم تسجيل ${(payload.new as any).name} بنجاح`,
+          title: "انضم إلينا",
+          description: `تم تسجيل ${newRegistration.name} بنجاح`,
           variant: "success",
         });
       })
-      .subscribe();
+      .subscribe((status) => {
+        console.log("Subscription status:", status);
+      });
     
     // Load activities - updated with 2025 dates
     const mockActivities = [
@@ -110,16 +126,17 @@ const Dashboard = () => {
     setActivities(mockActivities);
     
     return () => {
+      console.log("Removing Supabase channel");
       supabase.removeChannel(channel);
     };
   }, [navigate, toast]);
 
   // Filter registrations based on search term
   const filteredRegistrations = registrations.filter(user => 
-    user.name.includes(searchTerm) || 
-    user.phone.includes(searchTerm) || 
-    user.national_id.includes(searchTerm) ||
-    user.position.includes(searchTerm)
+    user.name?.includes(searchTerm) || 
+    user.phone?.includes(searchTerm) || 
+    user.national_id?.includes(searchTerm) ||
+    user.position?.includes(searchTerm)
   );
 
   // Handle logout
